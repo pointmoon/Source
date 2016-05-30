@@ -1,0 +1,271 @@
+#include <iostream>
+#include <cstdlib>
+using namespace std;
+
+
+template <class DataT>
+class listob
+{
+    public:
+	DataT info;
+	listob<DataT> *next;
+        listob(){
+        info=0;
+        next=NULL;
+    }
+
+	listob(DataT c){
+	    info=c;
+	    next=NULL;
+    }
+
+	void operator<<(DataT b){
+	    info=b;
+    }
+};
+
+template <class DataT>
+class dlist: public listob<DataT>{
+    listob<DataT> *start;
+    public:
+	dlist(){
+	    start=NULL;
+    }
+	~dlist();
+	void tostart(DataT);
+	void toend(DataT);
+	void delstart(void);
+	void delend(void);
+	void show();
+	listob<DataT> *getstart(){
+	    return start;
+    }
+};
+
+template <class DataT>
+dlist<DataT>::~dlist(){
+    listob<DataT> *p, *p1;
+	p=start;
+	while(p!=start){
+        p1=p->next;
+		delete p;
+		p=p1;
+    }
+}
+
+template <class DataT>
+void dlist<DataT>::tostart(DataT c){
+    listob<DataT> *p;
+    p= new listob<DataT>;
+    *p<<c;
+    if(start==NULL){
+        start=p;
+        start->next=start;
+    }
+	else{
+        p->next=start->next;
+        start->next=p;
+    }
+}
+
+template <class DataT>
+void dlist<DataT>::toend(DataT c){
+    tostart(c);
+	start=start->next;
+}
+
+template <class DataT>
+void dlist<DataT>::delstart(void){
+    if(start==0||start==start->next){
+        start=0;
+        return;
+    }
+    listob<DataT> *p;
+    p=start->next;
+    start->next=(start->next)->next;
+    delete p;
+ }
+
+template <class DataT>
+void dlist<DataT>::delend(void){
+    if(start==0||start==start->next){
+        start=0;
+        return;
+    }
+    listob<DataT>* p= new listob<DataT>;
+    p=start;
+    while(p->next!=start)
+    p=p->next;
+    start=p;
+    delstart();
+ }
+
+template <class DataT>
+void  dlist<DataT>::show(void){
+    if(start==NULL){
+        cout<<"Список пуст";
+        return;
+    }
+    listob<DataT> *t=start;
+    do{
+        t=t->next;
+        cout<<t->info<<" ";
+    }
+    while(t!=start);
+}
+
+
+int main ()
+{
+    setlocale(LC_ALL, "Russian");
+    dlist<int> i_spisok;
+    dlist<char> c_spisok;
+    char B;
+    cout << "Какой тип данных использовать?" << endl;
+    cout << "1)i - int" << endl;
+    cout << "2)c - char" << endl << endl;
+    cin >> B;
+if (B == 'i'){
+    while(1){
+        char W;
+        cout << "\nВыберете желаемое действие: "<< endl;
+        cout << "*: Очистить экран;"<< endl;
+        cout << "0: Завершить работу программы;"<< endl;
+        cout << "1: Добавить элементы в начало списка;"<< endl;
+        cout << "2: Удалить элемент с начала списка;"<< endl;
+        cout << "3: Удалить элемент с конца списка;"<< endl;
+        cout << "4: Добавить элементы в конец списка;"<< endl;
+        cout << "5: Вывести список на экран;"<< endl << endl;
+        cin >> W;
+        switch (W){
+        case '*':
+            {
+                system("cls");
+                break;
+            }
+        case '0':
+            {
+                return 0;
+                break;
+            }
+        case '1':
+            {
+                cout << "\nВведите сколько элементов необходимо добавить в начало списка: ";
+                int kol_elem, elem;
+                cin >> kol_elem;
+                for (int i=0; i<kol_elem; i++)
+                {
+                    cin >> elem;
+                    i_spisok.tostart(elem);
+                }
+                cout << endl;
+                break;
+            }
+        case '2':
+            {
+                i_spisok.delstart();
+                break;
+            }
+        case '3':
+            {
+                i_spisok.delend();
+                break;
+            }
+        case '4':
+            {
+                cout << "\nВведите сколько элементов необходимо добавить в конец списка: ";
+                int kol_elem, elem;
+                cin >> kol_elem;
+                for (int i=0; i<kol_elem; i++)
+                {
+                    cin >> elem;
+                    i_spisok.toend(elem);
+                }
+                cout << endl;
+                break;
+            }
+        case '5':
+            {
+                cout << "\nВаш список: ";
+                i_spisok.show();
+                cout << endl;
+                break;
+            }
+        }//switch
+    }//while
+}//if
+
+if (B == 'c')
+{
+    while(1){
+        char W;
+        cout << "\nВыберете желаемое действие: "<< endl;
+        cout << "*: Очистить экран;"<< endl;
+        cout << "0: Завершить работу программы;"<< endl;
+        cout << "1: Добавить элементы в начало списка;"<< endl;
+        cout << "2: Удалить элемент с начала списка;"<< endl;
+        cout << "3: Удалить элемент с конца списка;"<< endl;
+        cout << "4: Добавить элементы в конец списка;"<< endl;
+        cout << "5: Вывести список на экран;"<< endl << endl;
+        cin >> W;
+        switch (W){
+        case '*':
+            {
+                system("cls");
+                break;
+            }
+        case '0':
+            {
+                return 0;
+                break;
+            }
+        case '1':
+            {
+                cout << "\nВведите сколько элементов необходимо добавить в начало списка: ";
+                int kol_elem;
+                char elem;
+                cin >> kol_elem;
+                for (int i=0; i<kol_elem; i++)
+                {
+                    cin >> elem;
+                    c_spisok.tostart(elem);
+                }
+                cout << endl;
+                break;
+            }
+        case '2':
+            {
+                c_spisok.delstart();
+                break;
+            }
+        case '3':
+            {
+                c_spisok.delend();
+                break;
+            }
+        case '4':
+            {
+                cout << "\nВведите сколько элементов необходимо добавить в конец списка: ";
+                int kol_elem;
+                char elem;
+                cin >> kol_elem;
+                for (int i=0; i<kol_elem; i++)
+                {
+                    cin >> elem;
+                    c_spisok.toend(elem);
+                }
+                cout << endl;
+                break;
+            }
+        case '5':
+            {
+                cout << "\nВаш список: ";
+                c_spisok.show();
+                cout << endl;
+                break;
+            }
+        }//switch
+    }//while
+}//if
+return 0;
+}
