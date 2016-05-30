@@ -1,0 +1,206 @@
+#include <stdio.h>
+#include <math.h>
+#include <graphics.h>
+#include <conio.h>
+#include <string>
+#include <windows.h>
+#define roundf(x) floor(x + 0.5f)
+
+
+int New_Line(float x1, float y1, float x2, float y2)
+{
+    cleardevice();
+    settextstyle(0, 0, 1);
+
+        setcolor(BLUE);
+        line(x1, y1, x2, y2);
+        setcolor(YELLOW);
+        outtextxy(x1, y1-20, "Start");
+        outtextxy(x2, y2+10, "End");
+
+}
+
+
+
+
+
+
+void line(HDC hdc, int x1, int y1, int x2, int y2)
+{
+      int dx = (x2 - x1 >= 0 ? 1 : -1);
+      int dy = (y2 - y1 >= 0 ? 1 : -1);
+
+      int lengthX = abs(x2 - x1);
+      int lengthY = abs(y2 - y1);
+      int length;
+        if (lengthX > lengthY){
+            length = lengthX;
+        }
+        else
+            length = lengthY;
+
+      if (length == 0)
+      {
+            SetPixel(hdc, x1, y1, 0);
+      }
+
+      if (lengthY <= lengthX)
+      {
+            // Начальные значения
+            int x = x1;
+            int y = y1;
+            int d = -lengthX;
+
+            // Основной цикл
+            length++;
+            while(length--)
+            {
+                  SetPixel(hdc, x, y, 0);
+                  x += dx;
+                  d += 2 * lengthY;
+                  if (d > 0) {
+                        d -= 2 * lengthX;
+                        y += dy;
+                  }
+            }
+      }
+      else
+      {
+            // Начальные значения
+            int x = x1;
+            int y = y1;
+            int d = - lengthY;
+
+            // Основной цикл
+            length++;
+            while(length--)
+            {
+                  SetPixel(hdc, x, y, 0);
+                  y += dy;
+                  d += 2 * lengthX;
+                  if (d > 0) {
+                        d -= 2 * lengthY;
+                        x += dx;
+                  }
+            }
+      }
+}
+
+
+
+int main()
+{
+    int gdriver = DETECT, gmode;
+    initgraph(&gdriver, &gmode, "");
+    setbkcolor(BROWN);
+
+    char N;
+    int angle;
+    float x1, y1, x2, y2, k, pi, Ug, XX, YY, n1, n2;
+
+    x1 = y1 = 150;
+    x2 = y2 = 400;
+    pi = 3.1415926;
+    angle = 3;
+    k = (angle * pi) / 180;
+
+
+    New_Line(x1, y1, x2, y2);
+    line(x1+10,y1,x2+10,y2);
+
+    setlocale(LC_ALL, "Russian");
+    printf("q - поворот\nr - уменьшение масштаба\ne - увеличение масштаба по y\nперемещение отрезка по экрану на стрелочках\n");
+
+    while(N != 13)
+    {
+        N = getche();
+        switch(N)
+        {
+        case 27:
+            {
+                return 0;
+                break;
+            }
+
+        case 72:
+            y1 = y1 - 10;
+            y2 = y2 - 10;
+            New_Line(x1, y1, x2, y2);
+            line(x1+10,y1,x2+10,y2);
+            break;
+        case 80:
+            y1 = y1 + 10;
+            y2 = y2 + 10;
+            New_Line(x1, y1, x2, y2);
+            line(x1+10,y1,x2+10,y2);
+            break;
+        case 77:
+            x1 = x1 + 10;
+            x2 = x2 + 10;
+            New_Line(x1, y1, x2, y2);
+            line(x1+10,y1,x2+10,y2);
+            break;
+        case 75:
+            x1 = x1 - 10;
+            x2 = x2 - 10;
+            New_Line(x1, y1, x2, y2);
+            line(x1+10,y1,x2+10,y2);
+            break;
+
+        case 'e':
+
+                Ug = atan2 ((y2-y1),(x2-x1));
+                XX = cos(Ug);
+                YY = sin (Ug);
+                n1 = XX * 2;
+                n2 = YY * 2;
+
+                x1 = x1 + n1;
+                y1 = y1 + n2;
+
+                x2 = x2 - n1;
+                y2 = y2 - n2;
+
+
+                New_Line(x1, y1, x2, y2);
+                line(x1+10,y1,x2+10,y2);
+                break;
+
+        case 'r':
+
+                Ug = atan2 ((y2-y1),(x2-x1));
+                XX = cos(Ug);
+                YY = sin (Ug);
+                n1 = XX * 2;
+                n2 = YY * 2;
+
+                x1 = x1 - n1;
+                y1 = y1 - n2;
+
+                x2 = x2 + n1;
+                y2 = y2 + n2;
+
+
+                New_Line(x1,y1,x2,y2);
+                line(x1+10,y1,x2+10,y2);
+                break;
+
+        case 'q':
+            float  midx, midy;
+            float X1 = x1, X2 = x2, Y1=y1, Y2=y2;
+
+            midx = (x1 + x2)/2;
+            midy = (y1 + y2)/2;
+
+            x1 = midx + (X1 - midx) * cos(k) - (Y1 - midy) * sin(k);
+            y1 = midy + (X1 - midx) * sin(k) + (Y1 - midy) * cos(k);
+            x2 = midx + (X2 - midx) * cos(k) - (Y2 - midy) * sin(k);
+            y2 = midy + (X2 - midx) * sin(k) + (Y2 - midy) * cos(k);
+
+            New_Line(x1, y1, x2, y2);
+            line(x1+10,y1,x2+10,y2);
+            break;
+        }
+    }
+    closegraph();
+}
