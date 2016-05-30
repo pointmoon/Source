@@ -1,0 +1,89 @@
+#include <math.h>
+#include <graphics.h>
+#include <iostream>
+#include <time.h>
+
+#define COLLOR YELLOW
+
+using namespace std;
+
+int main(){
+setlocale(LC_ALL, "Russian");
+int K_C;
+cout << "Введите кол-во кругов: ";
+cin >> K_C;
+
+int gdriver = DETECT, gmode;
+initgraph(&gdriver, &gmode, "");
+
+clock_t stBR, finBR, stC, finC;
+int ox=150, oy=200;
+int x, y, del, err;
+
+//рисование круга по алгоритму брезенхема
+stBR=clock();
+for(int i=0; i<K_C; i+=1){
+    x=0;
+    y=i;
+    err=0;
+    del=2*(1-i);
+
+    while(y>=0){
+       putpixel(ox+x, oy+y, COLLOR-1);
+       putpixel(ox+x, oy-y, COLLOR-2);
+       putpixel(ox-x, oy+y, COLLOR-3);
+       putpixel(ox-x, oy-y, COLLOR-4);
+       err=2*(del-x)-1;
+
+       if((del<0) && (err<=0))
+        {
+            del += 2*((++x)+1);
+            continue;
+        }
+
+   err = 2*(del-x)-1;
+
+       if((del>0) && (err>0))
+        {
+            del=del+(1-2*(y--));
+            continue;
+        }
+   x++;
+   del=del+(1-2*(y--));
+   y--;
+}//while
+}//for
+
+finBR=clock();
+
+//рисование круга по встроенной функции
+stC=clock();
+setcolor(GREEN);
+for(int i=0; i<K_C; i++){
+circle(450, 200, i);
+}
+finC=clock();
+
+int time_BR = finBR - stBR;
+cout << endl << "Время отрисовки по алгоритму Брезенхема " << time_BR << endl;
+
+int time_S = finC - stC;
+cout << "Время отрисовки функции circle() " << time_S << endl;
+
+if (time_BR > time_S){
+        cout << "Функция circle() отрисовывает быстрее в " << floor(time_BR / time_S) <<  " раз(а)" << endl;
+        goto exit_1;
+}
+if (time_S > time_BR){
+    cout << "Алгоритм Брезенхема отрисовывает быстрее в " << floor(time_S / time_BR) <<  " раз(а)" << endl;
+    goto exit_1;
+}
+if (time_BR == time_S){
+    cout << "Время отрисовки одинаково." << endl;
+}
+
+exit_1:
+getch();
+closegraph();
+return 0;
+}
