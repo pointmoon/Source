@@ -1,0 +1,229 @@
+#include <stdio.h>
+#include <cmath>
+#include <math.h>
+#include <graphics.h>
+#include <conio.h>
+#include <string>
+#include <iostream>
+#define N 3
+#define Z 1.047111
+#define PI 3.1415926
+
+void mush_plus(float *x1, float *x2, float *y1, float *y2);
+void povorot_unchas(float *x1, float *x2, float *y1, float *y2);
+void povorot_chas(float *x1, float *x2, float *y1, float *y2);
+void mush_minus(float *x1, float *x2, float *y1, float *y2);
+void vverh(float *y1, float *y2);
+void vniz(float *y1, float *y2);
+void prav(float *x1, float *x2);
+void lev(float *x1, float *x2);
+void narisuy(float *x1, float *x2, float *y1, float *y2);
+
+int main(){
+    int gdriver = DETECT, gmode, i;
+    initgraph(&gdriver, &gmode, "");
+
+float x1[N],x2[N],y1[N],y2[N],X1,X2,Y1,Y2,midx, midy;
+
+x1[0]=319;
+y1[0]=189;
+
+x2[0]=319;
+y2[0]=289;
+
+for (i=1;i<N;i++){
+    X1 = x1[i-1], X2 = x2[i-1], Y1=y1[i-1], Y2=y2[i-1];
+
+    midx = (X1 + X2)/2;
+    midy = (Y1 + Y2)/2;
+
+    x1[i] = midx + (X1 - midx) * cos(Z) - (Y1 - midy) * sin(Z);
+    y1[i] = midy + (X1 - midx) * sin(Z) + (Y1 - midy) * cos(Z);
+    x2[i] = midx + (X2 - midx) * cos(Z) - (Y2 - midy) * sin(Z);
+    y2[i] = midy + (X2 - midx) * sin(Z) + (Y2 - midy) * cos(Z);
+}
+
+narisuy(x1,x2,y1,y2);
+
+
+while(1){
+    char W = getche();
+switch(W){
+
+    case 27:
+    {
+        return 0;
+        break;
+    }
+
+    case '+':
+    {
+        for(i=0; i<N; i++){
+        mush_plus(&x1[i], &x2[i], &y1[i], &y2[i]);
+            }
+        cleardevice();
+        narisuy(x1,x2,y1,y2);
+        break;
+    }
+
+    case '-':
+    {
+        for(i=0; i<N; i++){
+        mush_minus(&x1[i], &x2[i], &y1[i], &y2[i]);
+            }
+        cleardevice();
+        narisuy(x1,x2,y1,y2);
+        break;
+    }
+
+    case 72:
+    {
+        for(i=0; i<N; i++){
+        vverh(&y1[i],&y2[i]);
+            }
+        cleardevice();
+        narisuy(x1,x2,y1,y2);
+        break;
+    }
+
+    case 80:
+    {
+        for(i=0; i<N; i++){
+        vniz(&y1[i],&y2[i]);
+            }
+        cleardevice();
+        narisuy(x1,x2,y1,y2);
+        break;
+    }
+
+    case 77:
+    {
+        for(i=0; i<N; i++){
+        prav(&x1[i],&x2[i]);
+            }
+        cleardevice();
+        narisuy(x1,x2,y1,y2);
+        break;
+    }
+
+    case 75:
+    {
+        for(i=0; i<N; i++){
+        lev(&x1[i],&x2[i]);
+            }
+        cleardevice();
+        narisuy(x1,x2,y1,y2);
+        break;
+    }
+
+    case 'w':
+    {
+        for(i=0; i<N; i++){
+        povorot_chas(&x1[i], &x2[i], &y1[i], &y2[i]);
+            }
+        cleardevice();
+        narisuy(x1,x2,y1,y2);
+        break;
+    }
+    case 'q':
+    {
+        for(i=0; i<N; i++){
+        povorot_unchas(&x1[i], &x2[i], &y1[i], &y2[i]);
+            }
+        cleardevice();
+        narisuy(x1,x2,y1,y2);
+        break;
+    }
+
+}//switch
+}//while
+ closegraph();
+}
+
+void mush_plus(float *x1, float *x2, float *y1, float *y2){
+    float Ug, XX, YY, n1, n2;
+    Ug = atan2 ((*y2-*y1),(*x2-*x1));
+    XX = cos(Ug);
+    YY = sin (Ug);
+    n1 = XX * 2;
+    n2 = YY * 2;
+
+    *x1 = *x1 - n1;
+    *y1 = *y1 - n2;
+
+    *x2 = *x2 + n1;
+    *y2 = *y2 + n2;
+}
+void povorot_unchas(float *x1, float *x2, float *y1, float *y2){
+    float  midx, midy, k;
+    float X1=*x1, X2=*x2, Y1=*y1, Y2=*y2;
+    k = (-3 * PI) / 180;
+
+    midx = (X1 + X2)/2;
+    midy = (Y1 + Y2)/2;
+
+    *x1 = midx + (X1 - midx) * cos(k) - (Y1 - midy) * sin(k);
+    *y1 = midy + (X1 - midx) * sin(k) + (Y1 - midy) * cos(k);
+    *x2 = midx + (X2 - midx) * cos(k) - (Y2 - midy) * sin(k);
+    *y2 = midy + (X2 - midx) * sin(k) + (Y2 - midy) * cos(k);
+}
+void povorot_chas(float *x1, float *x2, float *y1, float *y2){
+    float  midx, midy, k;
+    float X1=*x1, X2=*x2, Y1=*y1, Y2=*y2;
+    k = (3 * PI) / 180;
+
+    midx = (X1 + X2)/2;
+    midy = (Y1 + Y2)/2;
+
+    *x1 = midx + (X1 - midx) * cos(k) - (Y1 - midy) * sin(k);
+    *y1 = midy + (X1 - midx) * sin(k) + (Y1 - midy) * cos(k);
+    *x2 = midx + (X2 - midx) * cos(k) - (Y2 - midy) * sin(k);
+    *y2 = midy + (X2 - midx) * sin(k) + (Y2 - midy) * cos(k);
+}
+void mush_minus(float *x1, float *x2, float *y1, float *y2){
+    float Ug, XX, YY, n1, n2;
+    float delta;
+    delta=sqrt(((*x2-*x1)*(*x2-*x1))+((*y2-*y1)*(*y2-*y1)));
+    if (delta > 20){
+    Ug = atan2 ((*y2-*y1),(*x2-*x1));
+    XX = cos(Ug);
+    YY = sin (Ug);
+    n1 = XX * 2;
+    n2 = YY * 2;
+
+    *x1 = *x1 + n1;
+    *y1 = *y1 + n2;
+
+    *x2 = *x2 - n1;
+    *y2 = *y2 - n2;
+    }
+}
+void vverh(float *y1, float *y2){
+    *y1 = *y1 - 10;
+    *y2 = *y2 - 10;
+}
+void vniz(float *y1, float *y2){
+    *y1 = *y1 + 10;
+    *y2 = *y2 + 10;
+}
+void prav(float *x1, float *x2){
+    *x1 = *x1 + 10;
+    *x2 = *x2 + 10;
+}
+void lev(float *x1, float *x2){
+    *x1 = *x1 - 10;
+    *x2 = *x2 - 10;
+}
+void narisuy(float *x1, float *x2, float *y1, float *y2){
+setcolor(WHITE);
+line(x1[0], y1[0], x1[1], y1[1]);
+line(x1[1], y1[1], x1[2], y1[2]);
+line(x1[2], y1[2], x2[0], y2[0]);
+line(x2[0], y2[0], x2[1], y2[1]);
+line(x2[1], y2[1], x2[2], y2[2]);
+line(x2[2], y2[2], x1[0], y1[0]);
+
+setcolor(GREEN);
+for (int i=0; i<N; i++)
+    line(x1[i],y1[i],x2[i],y2[i]);
+}
