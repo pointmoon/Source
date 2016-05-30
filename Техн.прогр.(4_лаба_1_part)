@@ -1,0 +1,161 @@
+#include <iostream>
+#include <cstdlib>
+using namespace std;
+
+template <typename T>
+void printArray(T * array, int *size)
+{
+    for (register int i = 0; i < *size; i++)
+    {
+        cout << array[i] << " ";
+    }
+    cout << endl;
+}
+
+template <typename T>
+void vvodArray(T * array, int *size)
+{
+    for (register int i = 0; i < *size; i++)
+    {
+        cin >> array[i];
+    }
+}
+
+template <typename T>
+void binary_find(T * array,const T key, int *size)
+{
+int left=0, right=*size, mid, flag=0;
+while (left<=right)
+{
+    mid=left+(right-left)/2;
+    if (key<array[mid])
+    {
+        right=mid-1;
+    }
+    else
+    {
+        if (key>array[mid])
+        {
+            left=mid+1;
+        }
+        else
+        {
+            cout << endl << "Элемент найден! Его индекс: " << mid << endl << endl;
+            flag++;
+        break;
+        }
+    }
+}
+if(flag==0)
+cout << "\nДанного элемента нет!\n" << endl;
+}
+
+template <typename T>
+void sortArray(T * array, int *size)
+{
+    T temp = 0;
+    for(register int i=0; i < *size; i++)
+        for(register int j=0; j < *size-1; j++)
+        {
+            if(array[j] > array[j+1])
+            {
+                temp = array[j];
+                array[j] = array[j+1];
+                array[j+1] = temp;
+            }
+        }
+}
+
+int main()
+{
+    setlocale(LC_ALL, "Russian");
+    int size_array;
+
+    cout << "Введите размер массива (размер будет один для массивов всех типов): ";
+    cin >> size_array;
+
+    int iArray[size_array];
+    float fArray[size_array];
+    double dArray[size_array];
+    char cArray[size_array];
+
+    while(1)
+    {
+        char W;
+        cout << "Выберете желаемое действие:" << endl;
+        cout << "*: Очистить экран;" << endl;
+        cout << "0: Завершение работы программы;" << endl;
+        cout << "1: Массив типа int;" << endl;
+        cout << "2: Массив типа float;" << endl;
+        cout << "3: Массив типа double;" << endl;
+        cout << "4: Массив типа char." << endl << endl;
+        cin >> W;
+        switch (W)
+        {
+            case '*':
+            {
+                system("cls");
+                cout << "Размер массива: " << size_array << endl;
+                break;
+            }
+            case '0':
+            {
+                return 0;
+                break;
+            }
+            case '1':
+            {
+                cout << "Введите " << size_array << " элемента(-ов) массива: ";
+                vvodArray(iArray, &size_array);
+                cout << "Отсортированный массив: ";
+                sortArray(iArray, &size_array);
+                printArray(iArray, &size_array);
+                cout << "\nВведите элемент который необходимо найти: ";
+                int x1;
+                cin >> x1;
+                binary_find(iArray, x1, &size_array);
+                break;
+            }
+            case '2':
+            {
+                cout << "Введите " << size_array << " элемента(-ов) массива: ";
+                vvodArray(fArray, &size_array);
+                cout << "Отсортированный массив: ";
+                sortArray(fArray, &size_array);
+                printArray(fArray, &size_array);
+                cout << "\nВведите элемент который необходимо найти: ";
+                float x2;
+                cin >> x2;
+                binary_find(fArray, x2, &size_array);
+                break;
+            }
+            case '3':
+            {
+                cout << "Введите " << size_array << " элемента(-ов) массива: ";
+                vvodArray(dArray, &size_array);
+                cout << "Отсортированный массив: ";
+                sortArray(dArray, &size_array);
+                printArray(dArray, &size_array);
+                cout << "\nВведите элемент который необходимо найти: ";
+                double x2;
+                cin >> x2;
+                binary_find(dArray, x2, &size_array);
+                break;
+            }
+            case '4':
+            {
+                cout << "Введите " << size_array << " элемента(-ов) массива: ";
+                vvodArray(cArray, &size_array);
+                cout << "Отсортированный массив: ";
+                sortArray(cArray, &size_array);
+                printArray(cArray, &size_array);
+                cout << "\nВведите элемент который необходимо найти: ";
+                char x2;
+                cin >> x2;
+                binary_find(cArray, x2, &size_array);
+                break;
+            }
+        }
+    }
+    return 0;
+}
