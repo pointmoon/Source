@@ -1,0 +1,242 @@
+#include <iostream>
+#include <conio.h>
+
+using namespace std;
+
+int razmer_queue=0, vvod;
+float tempik, temp_1=1, temp_2=0, flag1=0, flag2=0, slim;
+class queue //Класс очереди
+{
+private:
+	struct queue_ob// Структура для хранения элементов очереди
+	{
+		float value;//Поле для хранения значения элемента очереди
+		queue_ob *addr; // Поле для хранения слеющего элемента
+	};
+
+	queue_ob *head; // указатель, хранящий адресс головы очереди
+	queue_ob *tail; // Указатель хранящий адрес хвоста
+	int size; //Текущий размер очереди
+
+public:
+	queue()// Конструктор класса
+				//В параметр передается голова очереди
+	{
+		head=new(queue_ob); //Выделяем память под элемент
+		tail=head; // При создании очереди хвост и голова являются одним и тем же элементом
+		head->value=0; // Записываем значение
+		head->addr=0; // Адрес ноль, так как следующего элемента пока нет
+		size=1; // После выделения памяти и заполянения полей структуры очередь стала иметь размер 1
+	}
+
+	int stack_size()//Функция возвращает размер очереди(кол-во элеменетов)
+	{
+		return size;
+	}
+
+    void pop(float *ret)//Удаляет элемент(выталкивает) и возвращает его
+                     // По адресу, хранящемся в ret, передается значение удаляемой головы
+    {
+        if(size == 0)
+        {
+            cout<<"Очередь пуста - удалять нечего!"<<endl;
+            return;
+        }
+
+        queue_ob *temp=head; // записываем адрес головы
+        *ret=head->value; // записываем значени головы
+        head=head->addr; // изменяем адрес головы
+        delete temp;  // удаляем старую голову
+        size--; // уменьшаем размер
+    }
+
+//перегрузка оператора ++
+bool operator ++(int)// Добавляет(вталкивает) элемент в очередь
+{
+	size++;// Кол-во элементов очереди увеличивается
+	queue_ob *temp=new(queue_ob); // Выделяем память под новый хвост очереди
+	temp->addr=0; // Записываем в поле адреса нового хвоста ноль, так как за ничего нету
+	float value;
+	cin >> value;
+	if (razmer_queue != 0){
+	temp->value=value; //Заполняем поле значения нового хвоста
+	tail->addr=temp; // Записываем в поле адреса старого хвоста адрес нового хвоста
+	tail=temp; //Записываем в указель хвоста адрес действительного хвоста
+	cout << "В очередь записано: " << value << endl;
+	return true;
+	}
+	else {
+    return false;
+    }
+}
+
+float peek()//Выгружает значение
+{
+    float kop;
+	if(size == 0) // Если очередь пуста(size == 0), то ничего не выгружает
+		{
+			cout<<"Очередь пуста!"<<endl;
+			return 0;
+		}
+	kop=head->value;// Выгружаем значение головы
+	return kop;
+}
+};
+
+
+//наследуем класс queue
+class queue1 : public queue{
+public:
+	queue1() : queue(){};//конструктор
+	//(унарная) перегрузка префиксной формы
+	friend queue1 operator--(queue1 &op1);
+	//(унарная) перегрузка постфиксной формы
+	friend queue1 operator--(queue1 &op1, int notused);
+	//(бинарная) перегрузка оператора +
+	queue1 operator+ (queue1 op2); //операнд op1 передаётся неявно
+	//(бинарная) перегрузка оператора -
+	friend queue1 operator- (queue1 op2);
+};
+
+//перегрузка оператора -
+queue1 operator- (queue1 op2)
+{
+    float c;
+    for (int i=0; i<vvod; i++)
+    {
+     op2.pop(&c);
+     slim+=c*2;
+    }
+     cout << endl << "Сумма всех элементов умноженная на 2 = " << slim << endl;
+     cout << endl << "Очередь пуста!"<< endl;
+    return op2;
+}
+
+//перегрузка оператора +
+queue1 queue1::operator+(queue1 op2)
+{
+    float c;
+    for (int i=0; i<vvod; i++)
+    {
+     op2.pop(&c);
+     slim+=c;
+    }
+     cout << endl << "Сумма всех элементов = " << slim << endl;
+     cout << endl << "Очередь пуста!"<< endl;
+    return op2;
+}
+
+//префиксной
+queue1 operator --(queue1 &op1){//описываем саму функцию
+    tempik=op1.peek();
+    temp_1+=tempik;
+    cout << endl << "Элемент очереди +1 = " << temp_1 << endl;
+return op1;
+}
+
+//постфиксной
+queue1 operator --(queue1 &op1, int notused){//описываем саму функцию
+    queue1 b;
+    tempik=op1.peek();
+    op1++;
+    cout << endl << "Элемент очереди +1 = " << tempik << endl;
+return b;
+}
+
+int main()
+{
+    setlocale(LC_ALL, "Russian");
+    	int i, j=0;
+	float b;
+	queue1 a; //Создлаем очередь (она инциализируется 0)
+
+
+
+while(1){
+cout << "Выберите желаемое действие: " << endl;
+cout << "0: Завершение работы программы" << endl;
+cout << "1: Ввод размера очереди" << endl;
+cout << "2: Заполнение очереди" << endl;
+cout << "3: Вывод очереди на экран и удаление" << endl;
+cout << "4: Увеличение элемента на себя (постфиксная функция - друг)" << endl;
+cout << "5: Увеличение элемента на себя (префиксная функция - друг)" << endl;
+cout << "6: Сумма всей очереди (ВНИМАНИЕ: очередь будет уничтожена!)" << endl;
+cout << "7: Сумма всей очереди умноженная на 2 (ВНИМАНИЕ: очередь будет уничтожена!)" << endl << endl;
+char W;
+    cin >> W;
+switch(W){
+
+    case '1':
+    {
+        cout << "Введите размер очереди " << endl;
+        cin >> vvod;
+        razmer_queue=vvod;
+        break;
+    }
+
+    case '2':
+         {
+        cout << "Введите элементы: " << endl;
+           for (i=0; i<vvod; i++)
+            {
+                if (!a++)
+                {
+                    break;
+                }
+                razmer_queue-=1;
+            }
+            a.pop(&b); //Выгрузили 0 из очереди
+            break;
+         }
+
+     case '3':
+        {
+          if (j < vvod)
+            {
+                a.pop(&b);
+                cout << "\nИз очереди удалено: " << b << endl << endl;
+                j++;
+                temp_1=0;
+                temp_2=0;
+            }
+        else
+        {
+            cout << "\n\nИз очереди всё удалено!\n\n";
+        }
+            break;
+        }
+
+    case '0':
+        {
+            return 0;
+            break;
+        }
+    case '4':
+        {
+
+            --a;
+            cout << endl;
+            break;
+        }
+    case '5':
+        {
+            a--;
+            cout << endl;
+            break;
+        }
+    case '6':
+        {
+            a + a;
+            return 0;
+            break;
+        }
+    case '7':
+        {
+            -a;
+            return 0;
+            break;
+        }
+        }//switch
+    }//while
+	return 0;
+}
