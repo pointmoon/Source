@@ -1,0 +1,229 @@
+#include <iostream>
+#include <conio.h>
+#include <graphics.h>
+#include <cmath>
+#include <cstdlib>
+
+#define size 8 // Количество вершин куба
+
+using namespace std;
+
+// Исходные координаты куба
+const int pix[size][3] ={{-25,-25,-25},{25,-25,-25},{25,25,-25},{-25,25,-25},
+			 {-25,-25,25}, {25,-25,25}, {25,25,25}, {-25,25,25}};
+
+int newpix[size][3];  // Преобразованные координаты куба
+
+int X,Y,Z,sX,sY;
+
+int RotX = 0,RotY = 0,RotZ = 0;   // углы поворота по X,Y,Z в градусах
+int ShiftX = 325,ShiftY = 225;    // сдвиг начала координат
+long double Scale = 2.0;                // масштабирование
+
+	 // вычисление фрактальной геометрической проекции
+	 // трехмерных точек на двумерную плоскость
+void Perspect()
+{
+  sX = X + Z /2;
+  sY = Y - Z /2;
+}
+	 // 3-D преобразования
+void Compute()
+{
+  double sinx = sin((RotX *M_PI) /180.0);
+  double siny = sin((RotY *M_PI) /180.0);
+  double sinz = sin((RotZ *M_PI) /180.0);
+  double cosx = cos((RotX *M_PI) /180.0);
+  double cosy = cos((RotY *M_PI) /180.0);
+  double cosz = cos((RotZ *M_PI) /180.0);
+  double x,y,z,x1,y1,z1;
+  for (register int i = 0;i < size;i++)
+  {
+    x = pix[i][0];   //Исходное направление
+    y = pix[i][1];
+    z = pix[i][2];
+
+    x1 = x*cosz + y*sinz;       // вокруг Z
+    y1 = -x*sinz + y*cosz;
+    z1 = z;
+
+    x = x1;                     // вокруг X
+    y = y1*cosx + z1*sinx;
+    z = -y1*sinx + z1*cosx;
+
+    x1 = x*cosy - z*siny;       // вокруг Y
+    y1 = y;
+    z1 = x*siny + z*cosy;
+
+    newpix[i][0] = x1*Scale;    // Масштабирование
+    newpix[i][1] = y1*Scale;
+    newpix[i][2] = z1*Scale;
+
+    newpix[i][0] += ShiftX;     // сдвиг по осям X и Y
+    newpix[i][1] += ShiftY;
+    newpix[i][2] += 25;
+  }
+}
+void DrawPix()  // Нарисовать кубик
+{
+  register int i,j;
+  int x,y;
+  for (i = 0; i < 4;i++)      // Рисует переднюю грань
+    {
+      X = newpix[i][0];   // Исходная точка
+      Y = newpix[i][1];
+      Z = newpix[i][2];
+      Perspect();         // Считает проецию на плоскость экрана
+      x = sX;
+      y = sY;
+      j = (i < 3) ? (i+1) : 0;  // if (i < 3) j = i+1; else j = 0;
+      X = newpix[j][0];   // конечная точка
+      Y = newpix[j][1];
+      Z = newpix[j][2];
+      Perspect();         // проекция
+      line(x,y,sX,sY);    // рисует линию
+    }
+  for (i = 4;i < size;i++)      // рисует главную грань
+    {
+      X = newpix[i][0];
+      Y = newpix[i][1];
+      Z = newpix[i][2];
+      Perspect();
+      x = sX;
+      y = sY;
+      j = (i < 7) ? (i+1) : 4; // if (i < 7) j = i+1; else j = 4;
+      X = newpix[j][0];
+      Y = newpix[j][1];
+      Z = newpix[j][2];
+      Perspect();
+      line(x,y,sX,sY);
+    }
+  for (i = 0;i < 4;i++)    // Рисует соединяющие ребра
+    {
+      X = newpix[i][0];
+      Y = newpix[i][1];
+      Z = newpix[i][2];
+      Perspect();
+      x = sX;
+      y = sY;
+      j = i+4;
+      X = newpix[j][0];
+      Y = newpix[j][1];
+      Z = newpix[j][2];
+      Perspect();
+      line(x,y,sX,sY);
+    }
+}
+int main() //     ГЛАВНАЯ ФУНКЦИЯ MAIN() !!!
+{
+  int gdriver = DETECT, gmode, errorcode;
+  initgraph(&gdriver, &gmode, "");
+  errorcode = graphresult();
+  if (errorcode != grOk)
+  {
+     cout << "Graphics error: %s\n";
+     getch();
+     return 0;
+  }
+  setcolor(WHITE);
+  setbkcolor(BLACK);
+  setwritemode(XOR_PUT);  // режим вывода со стиранием
+  Compute();
+  DrawPix();              // вывести исходную фигуру
+  int flg = 0;  // признак того, что фигура имеется и ее надо перерисовать
+  while (1)
+  {
+    char W = getche();
+    system("CLS");
+    switch (W)
+    {
+      case 27:
+          {
+                return 0;
+          }
+      case 'a':
+          {
+             	ShiftX -= 3;
+                flg = 1;
+                break;
+          }
+
+      case 'd':
+          {
+            	ShiftX += 3;
+                flg = 1;
+                break;
+          }
+
+      case 'w':
+          {
+             	ShiftY -= 3;
+                flg = 1;
+                break;
+          }
+
+      case 's':
+          {
+             	ShiftY += 3;
+                flg = 1;
+                break;
+          }
+
+      case '+':
+          {
+              	Scale += 0.1;
+                flg = 1;
+                break;
+          }
+
+      case '-':
+          {
+                if (Scale > 0.0)
+                Scale -= 0.1;
+                flg = 1;
+                break;
+          }
+
+      case 'x':
+          {
+             	if (RotX < 357) // полный круг 360 градусов
+                    RotX += 3;
+                else
+                    RotX = 0;     // 360 это 0
+                flg = 1;
+                break;
+          }
+
+      case 'y':
+          {
+            	if (RotY < 357)
+                    RotY += 3;
+                else
+                    RotY = 0;
+                flg = 1;
+                break;
+          }
+
+      case 'z':
+          {
+              	if (RotZ < 357)
+                    RotZ += 3;
+                else
+                    RotZ = 0;
+                flg = 1;
+                break;
+          }
+
+    } //switch
+    if (flg == 1)   // если фигура изменена, надо ее перерисовать
+    {
+      cleardevice();
+      Compute();    // вычисляем новые координаты
+      DrawPix();    // рисуем
+      flg = 0;
+    }
+  }//while
+  closegraph();
+  return 0;
+}
+    // конец
