@@ -1,0 +1,71 @@
+/*
+Author - Черных Денис
+The phone number - +7-931-207-7671
+E-mail address - dendy1996@yandex.ru
+*/
+
+#ifndef ARRAY1_H_INCLUDED
+#define ARRAY1_H_INCLUDED
+
+//1.) Процедура ввода массива с клавиатуры:
+template <typename T>
+void
+input(T* array, int& count){
+    for (register int i=0; i < count; i++){
+        std::cin >> array[i];
+    }
+}
+
+//2.) Процедура вывода массива на консоль:
+template <typename T>
+void
+output(T* array, int& count){
+    for (register int i=0; i < count; i++){
+        std::cout << array[i] << " ";
+    }
+    std::cout << std::endl;
+}
+
+//3.) Процедура сортировки массива по возрастанию (метод Пузырька):
+template <typename T>
+void
+sort_1(T* array, int& count){
+    T temp;
+    for (register int i=0; i<count; i++){
+        for(register int j=0; j<count-1; j++){
+           if (array[j+1]<array[j]){
+            temp = array[j];
+            array[j] = array[j+1];
+            array[j+1] = temp;
+           }
+        }
+    }
+}
+
+//4.) Процедура сортировки массива по убыванию (метод Пузырька):
+template <typename T>
+void
+sort_2(T* array, int& count){
+    T temp;
+    for (register int i=0; i<count; i++){
+        for(register int j=0; j<count-1; j++){
+           if (array[j+1]>array[j]){
+            temp = array[j+1];
+            array[j+1] = array[j];
+            array[j] = temp;
+           }
+        }
+    }
+}
+
+//5.) Процедура изменения элемента по заданному индексу:
+template <typename T>
+void
+change(T* array){
+    int temp;
+    std::cout << "Введите индекс элемента который необходимо изменить: ";
+    std::cin >> temp;
+    std::cout << "Введите новое значение: ";
+    std::cin >> array[temp];
+}
+#endif // ARRAY1_H_INCLUDED
