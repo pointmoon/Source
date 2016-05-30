@@ -1,0 +1,90 @@
+//3 лабораторная работа - Виртуальная функция
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+//объявление базового класса
+class Uravneniya{
+public:
+    virtual void koren(float a, float b, float c)=0;
+};
+
+//производный класс для линейных уравнений
+class lin_uravneniya : public Uravneniya{
+public:
+    float a, b, c, x;
+    void koren(float a, float b, float c){ //переопределение виртуальной функции
+    x = (c - b) / a;
+    cout << endl << "Корень уравнения: " << x << endl << endl;
+    }
+};
+
+//производный класс для квадратных уравнений
+class kvadr_uravneniya : public Uravneniya{
+public:
+    float a, b, c, x1, x2, D, sqrt_D;
+    void koren(float a, float b, float c){ //переопределение виртуальной функции
+        D = (b * b) - (4 * a * c);
+        if (D < 0)
+        {
+            cout << "Уравнение не имеет корней, т.к. D = " << D << endl << endl;
+        }
+        if (D == 0)
+        {
+            x1 = (0 - b) / (2 * a);
+            cout << "Уравнение имеет 1 корень: " << x1 << endl << endl;
+        }
+        if (D > 0)
+        {
+            sqrt_D = sqrt(D);
+            x1 = ((0 - b) + sqrt_D) / (2 * a);
+            x2 = ((0 - b) - sqrt_D) / (2 * a);
+            cout << "Уравнение имеет 2 корня: " << endl;
+            cout << "x1 = " << x1 << endl << "x2 = " << x2 << endl << endl;
+        }
+    }
+};
+
+int main()
+{
+    setlocale(LC_ALL, "Russian");
+    Uravneniya *U;
+    lin_uravneniya lin;
+    kvadr_uravneniya kvadrat;
+    while(1){
+        cout << "Выберите действие:" << endl;
+        cout << "1: Решение линейного уравнения;" << endl;
+        cout << "2: Решений квадратного уравнения;" << endl;
+        cout << "3: Завершение работы программы." << endl << endl;
+        char W;
+        cin >> W;
+        switch(W){
+        case '1':
+            {
+                cout << "Ведите коэфициенты уравнения (ax+b=c):" << endl;
+                cout << "Возможные типы данных: int и float" << endl;
+                float a, b, c;
+                U = &lin;
+                cin >> a >> b >> c;
+                U -> koren(a, b, c);
+                break;
+            }
+        case '2':
+            {
+                cout << "Ведите коэфициенты уравнения (a(x^2)+bx+c=0):" << endl;
+                cout << "Возможные типы данных: int и float" << endl;
+                float a, b, c;
+                U = &kvadrat;
+                cin >> a >> b >> c;
+                U -> koren(a, b, c);
+                break;
+            }
+        case '3':
+            {
+                return 0;
+                break;
+            }
+        }
+    }
+    return 0;
+}
