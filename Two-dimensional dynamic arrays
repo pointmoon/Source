@@ -1,0 +1,77 @@
+/*
+Author - Черных Денис
+The phone number - +7-931-207-7671
+E-mail address - dendy1996@yandex.ru
+*/
+
+#ifndef ARRAY2_H_INCLUDED
+#define ARRAY2_H_INCLUDED
+
+//1.) Процедура ввода массива с клавиатуры:
+template <typename T>
+void
+input(T** array, const int& number_of_rows, const int& number_of_columns){
+    for (register int i=0; i < number_of_rows; i++){
+        for (register int j=0; j < number_of_columns; j++){
+            std::cin >> array[i][j];
+        }
+    }
+}
+
+//2.) Процедура вывода массива на консоль:
+template <typename T>
+void
+output(T** array, const int& number_of_rows, const int& number_of_columns){
+    for (register int i=0; i < number_of_rows; i++){
+        for (register int j=0; j < number_of_columns; j++){
+            std::cout << array[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+
+//3.) Процедура сортировки массива по возрастанию (метод Пузырька):
+template <typename T>
+void
+sort_1(T** array, const int& number_of_rows, const int& number_of_columns){
+    for(register int q=0; q < number_of_rows; q++){
+        for (register int i=0; i < number_of_rows; i++){
+            for (register int j=0; j < number_of_columns-1; j++){
+                if (array[i][j] > array[i][j+1]){
+                    T temp = array[i][j];
+                    array[i][j] = array[i][j+1];
+                    array[i][j+1] = temp;
+                }
+            }
+        }
+    }
+}
+
+//4.) Процедура сортировки массива по убыванию (метод Пузырька):
+template <typename T>
+void
+sort_2(T** array, const int& number_of_rows, const int& number_of_columns){
+    for(register int q=0; q < number_of_rows; q++){
+        for (register int i=0; i < number_of_rows; i++){
+            for (register int j=0; j < number_of_columns-1; j++){
+                if (array[i][j] < array[i][j+1]){
+                    T temp = array[i][j];
+                    array[i][j] = array[i][j+1];
+                    array[i][j+1] = temp;
+                }
+            }
+        }
+    }
+}
+
+//5.) Процедура изменения элемента по заданному индексу:
+template <typename T>
+void
+change(T* array){
+    int t_ind_1, t_ind_2;
+    std::cout << "Enter the index of the item you want to change: ";
+    std::cin >> t_ind_1 >> t_ind_2;
+    std::cout << "Enter a new value: ";
+    std::cin >> array[t_ind_1][t_ind_2];
+}
+#endif // ARRAY2_H_INCLUDED
