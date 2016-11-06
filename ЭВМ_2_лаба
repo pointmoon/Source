@@ -1,0 +1,66 @@
+program laba_2;
+const K = 8;
+var A:array[1..K] of integer;
+    i:1..K;
+    flag_1: integer;
+    flag_2: integer;
+    tester: integer;
+    check: integer;
+    begin
+    writeln('Please, enter array A: ');
+    flag_1 := 0;
+    flag_2 := 0;
+    tester := 0;
+    check := K;
+    for i:=1 to K do
+         readln(A[i]);
+    asm
+    @top:
+    MOV tester, K
+    LEA BX, A
+    @r:
+    MOV AX, [BX]
+    TEST AX, 1
+    JNZ @next
+    JMP @iterator
+    @next:
+    inc BX
+    inc BX
+    MOV AX, [BX]
+    TEST AX, 1
+    JZ @good
+    JMP @iterator
+    @good:
+    dec BX
+    dec BX
+    MOV AX, [BX]
+    MOV flag_1, AX
+    inc BX
+    inc BX
+    MOV AX, [BX]
+    MOV flag_2, AX
+    MOV AX, flag_1
+    MOV [BX], AX
+    dec BX
+    dec BX
+    MOV AX, flag_2
+    MOV [BX], AX
+    inc BX
+    inc BX
+    inc BX
+    inc BX
+    JMP @iterator
+    @iterator:
+    dec tester
+    CMP tester, 1
+    JNZ @r
+    dec check
+    MOV AX, check
+    CMP AX, 0
+    JNZ @top
+    nop
+    end;
+    for i:=1 to K do
+    writeln(' new ',A[i]);
+    readln;
+    end.
